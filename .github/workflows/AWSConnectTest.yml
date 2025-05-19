@@ -1,0 +1,28 @@
+name: AWS OIDC Connect
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_REGION: "us-east-1"
+  AWS_ROLE_GH_ARN: ${{ secrets.AWS_ROLE_GH_ARN }}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  TestOIDC:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_GH_ARN }}
+          role-session-name: samplerolesession
+          aws-region: ${{ env.AWS_REGION }}
